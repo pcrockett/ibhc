@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+THIS_DIR="$(dirname "$(readlink -f "${0}")")"
+REPO_DIR="$(dirname "${THIS_DIR}")"
+
+target_name="${1:-}"
+if [ "${target_name}" == "" ]; then
+    echo "No target name specified."
+    exit 1
+fi
+
+cp "${REPO_DIR}/targets/templates/default.sh" "${REPO_DIR}/targets/${target_name}.sh"
