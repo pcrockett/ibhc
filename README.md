@@ -178,6 +178,9 @@ a little bit:
 * [shellcheck][shellcheck]
 * `make`
 
+The [examples directory](targets/examples) includes some targets that you can copy which will install these dependencies
+on a Debian-based system.
+
 [idem-bash]: https://arslan.io/2019/07/03/how-to-write-idempotent-bash-scripts/
 [ansible]: https://www.ansible.com/
 [xkcd]: https://xkcd.com/1987/
