@@ -15,7 +15,7 @@ You've considered using a script to automate the configuration of your devices, 
 into a single script gets pretty messy (though [writing idempotent Bash][idem-bash] helps).
 
 You've also considered using a _configuration management infrastructure-as-code automation devops microservice
-orchestration engine_ (commonly known in the industry as a "CMIaCADOMOE"), but decided that would be overkill.
+container orchestration engine_ (commonly known in the industry as a "CMIaCADOMCOE"), but decided that would be overkill.
 
 All you really want is a "poor man's" [Ansible][ansible], but with:
 
@@ -67,14 +67,14 @@ dependencies=()
 
 reached_if() {
     command_is_installed cowsay
-    # btw, `command_is_installed` is defined in lib.sh
-    # you can add whatever helper functions you want to that file
+    # btw, `command_is_installed` is defined in the `lib.d` directory
+    # you can add whatever helper functions you want there
 }
 
 apply() {
     sudo apt-get update
     sudo apt-get install --yes cowsay
-    # tip: consider adding an `install_package` helper function to lib.sh
+    # tip: consider adding an `install_package` helper function to the `lib.d` directory
 }
 ```
 
@@ -160,7 +160,7 @@ Other features include:
 * run specific targets, not just the `default` one (i.e. "software-update", "backup", "restore")
 * create different templates for different types of targets
 * run targets based on whether a file has been changed
-    * see `file_is_unchanged`, `set_file_unchanged`, and `set_file_dirty` functions in lib.sh
+    * see `file_is_unchanged`, `set_file_unchanged`, and `set_file_dirty` functions in the `lib.d` directory
 
 ### Recommended Dependencies
 

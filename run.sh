@@ -6,8 +6,17 @@ readonly REPO_DIR
 readonly STATE_DIR="${REPO_DIR}/.state"
 readonly TARGET_STATE_DIR="${STATE_DIR}/targets"
 
-source "${REPO_DIR}/vars.sh"
-source "${REPO_DIR}/lib.sh"
+# get array of scripts in the `lib.d` directory IN SORT ORDER:
+readarray -d '' lib_scripts_sorted < <(
+    find "${REPO_DIR}/lib.d" -maxdepth 1 -mindepth 1 -type f -name "*.sh" -print0 \
+        | sort --zero-terminated
+)
+
+for script_path in "${lib_scripts_sorted[@]}"
+do
+    # shellcheck disable=1090
+    source "${script_path}"
+done
 
 __run_target() {
     local name="${1}"
