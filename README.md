@@ -63,7 +63,9 @@ Assuming you're on a Debian-based machine, fill it out like so:
 ```bash
 #!/usr/bin/env bash
 
-dependencies=()
+dependencies=(
+    lib/apt-updated # This target has already been written for you, see `targets/lib/apt-updated.sh`
+)
 
 reached_if() {
     command_is_installed cowsay
@@ -72,9 +74,8 @@ reached_if() {
 }
 
 apply() {
-    sudo apt-get update
-    sudo apt-get install --yes cowsay
-    # tip: consider adding an `install_package` helper function to the `lib.d` directory
+    apt_install cowsay
+    # apt_install is also defined in `lib.d`, and is just a shortcut for `sudo apt-get install --yes "${@}"`
 }
 ```
 
@@ -111,9 +112,14 @@ Now you're ready to rock-n-roll:
 This will output the following:
 
 ```plaintext
+Target lib/apt-updated...
+
+[Lots of output from apt-get update]
+
+lib/apt-updated [done]
 Target cowsay-installed...
 
-[Lots of output from apt-get update and install...]
+[Lots of output from apt-get install]
 
 cowsay-installed [done]
 Target moo...
@@ -148,8 +154,9 @@ moo [done]
 default [done]
 ```
 
-Notice we didn't try to install `cowsay` again. That's because we wrote that target in an _idempotent_ way. The
-`reached_if` function saw that `cowsay` was already installed, so we skipped that target and went straight to `moo`.
+Notice we didn't try to install `cowsay` again, and there's no mention of `apt-updated` at all. That's because we wrote
+`cowsay-installed` in an _idempotent_ way. The `reached_if` function saw that `cowsay` was already there, so we skipped
+that target and went straight to `moo`.
 
 This pattern enables you to build your machine configuration over time, re-running your configuration scripts as many
 times as you want, with pretty minimal logic. And if you have a fairly decent grasp of Bash, you should be able to

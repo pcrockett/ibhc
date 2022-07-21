@@ -30,7 +30,10 @@ __run_target() {
         return 1
     fi
 
-    touch "${TARGET_STATE_DIR}/${name}"
+    local target_marker_file="${TARGET_STATE_DIR}/${name}"
+    # Targets may have a "/" in their name, so we might need to create an extra subdirectory for those:
+    mkdir --parent "$(dirname "${target_marker_file}")"
+    touch "${target_marker_file}"
 
     unset -f dependencies
     unset -f reached_if
@@ -41,7 +44,7 @@ __run_target() {
 
     if command -v reached_if &> /dev/null; then
         # Intentionally running in subshell:
-        if (set -Eeuo pipefail; reached_if); then
+        if (set -Eeuo pipefail; reached_if &> /dev/null); then
             echo "${name} [already satisfied]"
             return 0
         fi
@@ -72,7 +75,6 @@ __run_target() {
 }
 
 rm --recursive --force "${TARGET_STATE_DIR}"
-mkdir --parent "${TARGET_STATE_DIR}"
 
 targets_to_run=("${@}")
 if [ "${#targets_to_run[@]}" -eq 0 ]; then

@@ -87,3 +87,7 @@ set_file_dirty() {
     local state_file_path="${__ibhc_file_hashes_dir}/${path_hash[0]}"
     rm --force "${state_file_path}"
 }
+
+apt_install() {
+    sudo apt-get install --yes "${@}"
+}
