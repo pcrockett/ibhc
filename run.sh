@@ -18,6 +18,13 @@ do
     source "${script_path}"
 done
 
+__fail_target() {
+    local target_name="${1}"
+    local exit_code="${2}"
+    echo "${target_name} [FAIL] (${exit_code})"
+    exit "${exit_code}"
+}
+
 __run_target() {
     local name="${1}"
     if [ -f "${TARGET_STATE_DIR}/${name}" ]; then
@@ -61,13 +68,14 @@ __run_target() {
 
     if command -v apply &> /dev/null; then
         echo "Target ${name}..."
-        # Intentionally running in subshell:
-        if (set -Eeuo pipefail; apply); then
-            echo "${name} [done]"
-        else
-            echo "${name} [FAIL] (${?})"
-            return 1
-        fi
+
+        (
+            set -Eeuo pipefail
+            trap '__fail_target "${name}" ${?}' ERR
+            apply
+        )
+
+        echo "${name} [done]"
     else
         echo "${name} [done]"
     fi
