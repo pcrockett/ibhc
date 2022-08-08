@@ -1,5 +1,10 @@
 ## Idempotent Bash Host Configuration
 
+**tl;dr:** A practical example of this is my [personal server configuration
+repo](https://github.com/pcrockett/personal-vps).
+
+---
+
 This is a template repository. Use it to manage and automate machine configuration using plain Bash.
 
 ...but... _why?_
