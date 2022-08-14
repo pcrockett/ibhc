@@ -33,19 +33,24 @@ service_enabled() {
     service_exists "${service_name}" && test "$(systemctl is-enabled "${service_name}")" = "enabled"
 }
 
-get_file_hash() {
-    local path="${1}"
-    test -f "${path}" || return 0 # Return nothing
-
-    IFS=" " read -r -a sha_sum_output <<< "$(sha256sum "${path}")"
+get_hash() {
+    IFS=" " read -r -a sha_sum_output <<< "$(sha256sum -)"
     # For an explanation of the above line, see
     #
     # https://github.com/koalaman/shellcheck/wiki/SC2207
     #
     # We only want the hash of the file without the filename, so we're
     # splitting output on space and taking the first word.
+    #
+    # In this case, the "file" is stdin (hence the "-").
 
     echo "${sha_sum_output[0]}"
+}
+
+get_file_hash() {
+    local path="${1}"
+    test -f "${path}" || return 0 # Return nothing
+    get_hash < "${path}"
 }
 
 __ibhc_file_hashes_dir="${STATE_DIR}/file-hashes"
