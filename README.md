@@ -44,7 +44,7 @@ your laptop, and run the `newtarget` command:
 ./bin/newtarget cowsay-installed
 ```
 
-_If you use [direnv][direnv], you can just run `newtarget` without the `./bin/` part._
+_If you use [direnv][direnv], check out [.envrc.example](.envrc.example). Direnv makes things a little more ergonomic._
 
 That will create a script in the [targets directory](targets) called `cowsay-installed.sh`. The new script looks
 something like this:
