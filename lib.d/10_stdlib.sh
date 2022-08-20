@@ -30,7 +30,19 @@ service_exists() {
 
 service_enabled() {
     local service_name="${1}"
-    service_exists "${service_name}" && test "$(systemctl is-enabled "${service_name}")" = "enabled"
+    service_exists "${service_name}" && test "$(systemctl is-enabled "${service_name}")" == "enabled"
+}
+
+service_active() {
+    local service_name="${1}"
+    service_exists "${service_name}" && test "$(systemctl is-active "${service_name}")" == "active"
+}
+
+service_enabled_and_active() {
+    local service_name="${1}"
+    service_exists "${service_name}" \
+        && test "$(systemctl is-enabled "${service_name}")" == "enabled" \
+        && test "$(systemctl is-active "${service_name}")" == "active"
 }
 
 get_hash() {
