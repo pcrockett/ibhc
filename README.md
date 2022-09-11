@@ -186,6 +186,10 @@ a little bit:
 The [examples directory](targets/examples) includes some targets that you can copy which will install these dependencies
 on a Debian-based system.
 
+### See Also
+
+* [Propellor](https://propellor.branchable.com/): "a configuration management system using Haskell and Git."
+
 [idem-bash]: https://arslan.io/2019/07/03/how-to-write-idempotent-bash-scripts/
 [ansible]: https://www.ansible.com/
 [xkcd]: https://xkcd.com/1987/
