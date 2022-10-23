@@ -1,49 +1,6 @@
 #!/usr/bin/env bash
 
-log_success() {
-    local message="${1}"
-    local green="\033[32;1m"
-    local reset_color="\033[0m"
-    echo -e -n "${green}"
-    echo "${message}"
-    echo -e -n "${reset_color}"
-}
-
-log_error() {
-    local message="${1}"
-    local red="\033[91;1m"
-    local reset_color="\033[0m"
-    echo -e -n "${red}"
-    echo "ERROR: ${message}"
-    echo -e -n "${reset_color}"
-}
-
-command_is_installed() {
-    local name="${1}"
-    command -v "${name}" &> /dev/null
-}
-
-service_exists() {
-    local service_name="${1}"
-    systemctl list-unit-files --full --type=service | grep --fixed-strings "${service_name}.service" &> /dev/null
-}
-
-service_enabled() {
-    local service_name="${1}"
-    service_exists "${service_name}" && test "$(systemctl is-enabled "${service_name}")" == "enabled"
-}
-
-service_active() {
-    local service_name="${1}"
-    service_exists "${service_name}" && test "$(systemctl is-active "${service_name}")" == "active"
-}
-
-service_enabled_and_active() {
-    local service_name="${1}"
-    service_exists "${service_name}" \
-        && test "$(systemctl is-enabled "${service_name}")" == "enabled" \
-        && test "$(systemctl is-active "${service_name}")" == "active"
-}
+# Tools for detecting changes in files
 
 get_hash() {
     IFS=" " read -r -a sha_sum_output <<< "$(sha256sum -)"
@@ -103,17 +60,4 @@ set_file_dirty() {
     IFS=" " read -r -a path_hash <<< "$(echo "${path}" | sha256sum)"
     local state_file_path="${__ibhc_file_hashes_dir}/${path_hash[0]}"
     rm --force "${state_file_path}"
-}
-
-apt_install() {
-    sudo apt-get install --yes "${@}"
-}
-
-curl_download() {
-    local url="${1}"
-    curl --proto '=https' --tlsv1.2 \
-        --silent \
-        --show-error \
-        --fail \
-        --location "${url}"
 }
