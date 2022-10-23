@@ -108,3 +108,12 @@ set_file_dirty() {
 apt_install() {
     sudo apt-get install --yes "${@}"
 }
+
+curl_download() {
+    local url="${1}"
+    curl --proto '=https' --tlsv1.2 \
+        --silent \
+        --show-error \
+        --fail \
+        --location "${url}"
+}
