@@ -52,6 +52,7 @@ something like this:
 ```bash
 #!/usr/bin/env bash
 
+# shellcheck disable=2034
 dependencies=()
 
 reached_if() {
@@ -68,6 +69,7 @@ Assuming you're on a Debian-based machine, fill it out like so:
 ```bash
 #!/usr/bin/env bash
 
+# shellcheck disable=2034
 dependencies=(
     lib/apt-updated # This target has already been written for you, see `targets/lib/apt-updated.sh`
 )
@@ -89,6 +91,7 @@ Next, create a "moo" target: `./bin/newtarget moo` -- and fill out the `moo.sh` 
 ```bash
 #!/usr/bin/env bash
 
+# shellcheck disable=2034
 dependencies=(
     cowsay-installed
 )
