@@ -31,8 +31,10 @@ __run_target() {
         return 0 # Already ran this target
     fi
 
-    local path="${REPO_DIR}/targets/${name}.sh"
-    if [ ! -f "${path}" ]; then
+    # Define path constant that can be used in targets
+    local THIS_TARGET_PATH="${REPO_DIR}/targets/${name}.sh"
+    readonly THIS_TARGET_PATH
+    if [ ! -f "${THIS_TARGET_PATH}" ]; then
         echo "Unrecognized target: ${name}"
         return 1
     fi
@@ -47,7 +49,7 @@ __run_target() {
     unset -f apply
 
     # shellcheck disable=1090
-    source "${path}"
+    source "${THIS_TARGET_PATH}"
 
     if command -v reached_if &> /dev/null; then
         # Intentionally running in subshell:
