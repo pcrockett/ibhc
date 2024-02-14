@@ -5,12 +5,34 @@ REPO_DIR="$(dirname "$(readlink -f "${0}")")"
 readonly REPO_DIR
 readonly STATE_DIR="${REPO_DIR}/.state"
 readonly TARGET_STATE_DIR="${STATE_DIR}/targets"
+# shellcheck disable=2034
+readonly REPO_CONFIG_DIR="${REPO_DIR}/config"
+readonly VERBOSE=${VERBOSE:-false}
+
+log_verbose() {
+    if [ "${VERBOSE}" == "true" ]; then
+        echo "${*}"
+    fi
+}
 
 # get array of scripts in the `lib.d` directory IN SORT ORDER:
 readarray -d '' lib_scripts_sorted < <(
     find "${REPO_DIR}/lib.d" -maxdepth 1 -mindepth 1 -type f -name "*.sh" -print0 \
         | sort --zero-terminated
 )
+
+# Allow scripts to assume their current directory is the repo directory
+pushd "${REPO_DIR}" &> /dev/null
+
+on_exit() {
+    popd &> /dev/null
+}
+trap 'on_exit' EXIT
+
+if [ "${DO_NOT_RUN:-}" != "" ]; then
+    echo "DO_NOT_RUN env variable is set. Aborting."
+    exit 1
+fi
 
 for script_path in "${lib_scripts_sorted[@]}"
 do
@@ -54,10 +76,11 @@ __run_target() {
     if command -v reached_if &> /dev/null; then
         # Intentionally running in subshell:
         if (set -Eeuo pipefail; reached_if &> /dev/null); then
-            echo "${name} [already satisfied]"
+            log_verbose "${name} [already satisfied]"
             return 0
         fi
     fi
+    echo "${name} [running...]"
 
     # shellcheck disable=2154
     for dep in "${dependencies[@]}"
@@ -69,19 +92,14 @@ __run_target() {
     done
 
     if command -v apply &> /dev/null; then
-        echo "Target ${name}..."
-
         (
             set -Eeuo pipefail
             trap '__fail_target "${name}" ${?}' ERR
             apply
         )
-
-        echo "${name} [done]"
-    else
-        echo "${name} [done]"
     fi
 
+    echo "${name} [done]"
 }
 
 rm --recursive --force "${TARGET_STATE_DIR}"

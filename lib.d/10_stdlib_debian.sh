@@ -6,6 +6,10 @@ apt_install() {
     sudo apt-get install --yes "${@}"
 }
 
+apt_purge() {
+    sudo apt-get purge --yes "${@}"
+}
+
 package_is_installed() {
     local pkg_name="${1}"
     local desired_version="${2:-}"

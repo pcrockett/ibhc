@@ -23,3 +23,8 @@ log_error() {
     echo "ERROR: ${message}"
     echo -e -n "${reset_color}"
 }
+
+panic() {
+    log_error "${1}"
+    exit 1
+}

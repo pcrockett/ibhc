@@ -3,17 +3,7 @@
 # Tools for detecting changes in files
 
 get_hash() {
-    IFS=" " read -r -a sha_sum_output <<< "$(sha256sum -)"
-    # For an explanation of the above line, see
-    #
-    # https://github.com/koalaman/shellcheck/wiki/SC2207
-    #
-    # We only want the hash of the file without the filename, so we're
-    # splitting output on space and taking the first word.
-    #
-    # In this case, the "file" is stdin (hence the "-").
-
-    echo "${sha_sum_output[0]}"
+    sha256sum - | cut --fields 1 --delimiter " " --only-delimited
 }
 
 get_file_hash() {
@@ -57,7 +47,8 @@ set_file_dirty() {
     local path
     path="$(readlink -f "${1}")" # May not exist
 
-    IFS=" " read -r -a path_hash <<< "$(echo "${path}" | sha256sum)"
-    local state_file_path="${__ibhc_file_hashes_dir}/${path_hash[0]}"
+    local path_hash
+    path_hash="$(echo "${path}" | get_hash)"
+    local state_file_path="${__ibhc_file_hashes_dir}/${path_hash}"
     rm --force "${state_file_path}"
 }
